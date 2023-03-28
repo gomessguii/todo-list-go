@@ -26,9 +26,3 @@ func (r *userRepository) GetByUsername(username string) (response *models.User, 
 	err = r.db.Find(&response, "username LIKE", username).Error
 	return
 }
-
-
-// C = conhecimento
-// E = estrategia
-// P = preparação
-// A = Aplicação

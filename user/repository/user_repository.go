@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/gomessguii/todo-list-go/user/models"
 	"gorm.io/gorm"
 )
@@ -19,7 +21,12 @@ func New(db *gorm.DB) IUserRepository {
 }
 
 func (r *userRepository) CreateUser(user *models.User) error {
-	return r.db.Create(user.ToTransfer()).Error
+	userTransfer := user.ToTransfer()
+	foundUser, _ := r.GetByUsername(userTransfer.Username)
+	if foundUser.IsValid() {
+		return fmt.Errorf("username already registred")
+	}
+	return r.db.Create(userTransfer).Error
 }
 
 func (r *userRepository) GetByUsername(username string) (response *models.User, err error) {

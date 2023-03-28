@@ -1,10 +1,14 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
 	userCtrlPkg "github.com/gomessguii/todo-list-go/user/controller"
 	userDmPkg "github.com/gomessguii/todo-list-go/user/domain"
 	userRepoPkg "github.com/gomessguii/todo-list-go/user/repository"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 
 	todoCtrlPkg "github.com/gomessguii/todo-list-go/todo/controller"
 	todoDmPkg "github.com/gomessguii/todo-list-go/todo/domain"
@@ -12,10 +16,14 @@ import (
 )
 
 func main() {
-	userDm := userDmPkg.New(userRepoPkg.New())
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	userDm := userDmPkg.New(userRepoPkg.New(db))
 	userCtrl := userCtrlPkg.New(userDm)
 
-	todoDm := todoDmPkg.New(userDm, todoRepoPkg.New())
+	todoDm := todoDmPkg.New(userDm, todoRepoPkg.New(db))
 	todoCtrl := todoCtrlPkg.New(todoDm)
 
 	r := gin.Default()

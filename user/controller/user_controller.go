@@ -1,6 +1,10 @@
 package controller
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+
+	"github.com/gin-gonic/gin"
+)
 
 type IUserController interface {
 	Login(ctx *gin.Context)
@@ -9,6 +13,41 @@ type IUserController interface {
 	Logout(ctx *gin.Context)
 }
 
-func New(IUserDomain) IUserController {
-	panic("implement me")
+type userController struct {
+	userDomain IUserDomain
+}
+
+func (u *userController) Login(ctx *gin.Context) {
+	username := ctx.GetHeader("username")
+	if username == "" {
+		ctx.AbortWithError(400, fmt.Errorf("username is required"))
+	}
+
+	password := ctx.GetHeader("password")
+	if password == "" {
+		ctx.AbortWithError(400, fmt.Errorf("password is required"))
+	}
+
+	err := u.userDomain.Login(username, password)
+	if err != nil {
+		ctx.AbortWithError(403, err)
+	}
+
+	ctx.JSON(200, "logged in successfully")
+}
+
+func (u *userController) CreateUser(ctx *gin.Context) {
+	panic("not implemented")
+}
+
+func (u *userController) IsLoggedIn(ctx *gin.Context) {
+	panic("not implemented")
+}
+
+func (u *userController) Logout(ctx *gin.Context) {
+	panic("not implemented")
+}
+
+func New(userDomain IUserDomain) IUserController {
+	return &userController{userDomain: userDomain}
 }

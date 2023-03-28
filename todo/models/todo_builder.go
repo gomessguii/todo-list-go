@@ -26,7 +26,7 @@ func (b *builder) WithTask(task string) Builder {
 }
 
 func (b *builder) WithCompleted(completed bool) Builder {
-	b.todo.completed = completed
+	b.todo.done = completed
 	return b
 }
 

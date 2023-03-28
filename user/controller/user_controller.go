@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gomessguii/todo-list-go/user/models"
 )
 
 type IUserController interface {
@@ -36,16 +37,26 @@ func (u *userController) Login(ctx *gin.Context) {
 	ctx.JSON(200, "logged in successfully")
 }
 
-func (u *userController) CreateUser(ctx *gin.Context) {
-	panic("not implemented")
+func (ctrl *userController) CreateUser(ctx *gin.Context) {
+	userRequest := &models.UserTransfer{}
+	err := ctx.BindJSON(&userRequest)
+	if err != nil {
+		ctx.JSON(400, err)
+	}
+	err = ctrl.userDomain.CreateUser(userRequest.ToModel())
+	if err != nil {
+		ctx.JSON(400, err)
+	}
+	ctx.JSON(201, "user created")
 }
 
-func (u *userController) IsLoggedIn(ctx *gin.Context) {
-	panic("not implemented")
+func (ctrl *userController) IsLoggedIn(ctx *gin.Context) {
+	ctx.JSON(200, ctrl.userDomain.IsLoggedIn())
 }
 
-func (u *userController) Logout(ctx *gin.Context) {
-	panic("not implemented")
+func (ctrl *userController) Logout(ctx *gin.Context) {
+	ctrl.userDomain.Logout()
+	ctx.JSON(200, "logged out")
 }
 
 func New(userDomain IUserDomain) IUserController {

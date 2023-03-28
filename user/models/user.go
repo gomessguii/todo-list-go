@@ -23,3 +23,11 @@ type UserTransfer struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
+
+func (u *UserTransfer)ToModel() *User {
+	return &User{
+		id: u.ID, 
+		username: u.Username, 
+		password: u.Password,
+	}
+}

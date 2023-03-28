@@ -32,6 +32,10 @@ func main() {
 
 	r := gin.Default()
 	r.POST("/login", userCtrl.Login)
+	r.POST("/logout", userCtrl.Logout)
+
+	r.POST("/user/new", userCtrl.CreateUser)
+	r.POST("/user/loggedin", userCtrl.IsLoggedIn)
 
 	r.GET("/todo/:id", todoCtrl.GetTodo)
 	r.POST("/todo/:id/complete", todoCtrl.CompleteTodo)

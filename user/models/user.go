@@ -6,6 +6,10 @@ type User struct {
 	password string
 }
 
+func (u *User)IsValid() bool {
+	return u != nil && u.username != "" && u.password != ""
+}
+
 func (u *User) ToTransfer() *UserTransfer {
 	return &UserTransfer{
 		ID:       u.id,
